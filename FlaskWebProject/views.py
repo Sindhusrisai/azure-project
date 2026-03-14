@@ -66,13 +66,17 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            # --- FAILED LOGIN LOG ---
+            # --- FAILED LOGIN LOGS ---
             app.logger.warning('Invalid login attempt')
+            print('Invalid login attempt', flush=True) # <-- BULLETPROOF TRICK
+            
             flash('Invalid username or password')
             return redirect(url_for('login'))
         
-        # --- SUCCESSFUL LOGIN LOG ---
-        app.logger.info('admin logged in successfully')
+        # --- SUCCESSFUL LOGIN LOGS ---
+        app.logger.warning('admin logged in successfully')
+        print('admin logged in successfully', flush=True) # <-- BULLETPROOF TRICK
+        
         login_user(user, remember=form.remember_me.data)
         
         next_page = request.args.get('next')
